@@ -1,24 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Header from './components/Header'
+import AddPost from './components/AddPost'
+import Posts from './components/Posts'
+import { useState } from 'react'
+
+
 
 function App() {
+
+  const [posts, createPosts] = useState([
+    {
+        id: 1,
+        title: 'Title',
+        user: 'Username',
+        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
+    },
+    {
+        id: 2,
+        title: 'Title',
+        user: 'Username',
+        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
+    },
+    {
+        id: 3,
+        title: 'Title',
+        user: 'Username',
+        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
+    }
+  ])
+
+  const addPost = (post) => {
+
+    const id = Math.floor(Math.random() * 10000) + 1
+
+    const newPost = { id, ...post }
+    createPosts([...posts, newPost])
+  }
+
+  const deletePost = (id) => {
+    createPosts(posts.filter((post) => post.id !== id))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Container>
+      <Row>
+        <Col md="6" className="mb-3">
+          <Header title="React Blog" />
+          <AddPost onAdd={addPost} />
+        </Col>
+        <Col md="6" className="p-3">
+          <Posts posts={posts} onDelete={deletePost} />
+        </Col>
+      </Row>
+    </Container>
+    </>
   );
 }
 
