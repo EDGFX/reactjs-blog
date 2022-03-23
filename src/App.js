@@ -4,42 +4,61 @@ import Col from 'react-bootstrap/Col'
 import Header from './components/Header'
 import AddPost from './components/AddPost'
 import Posts from './components/Posts'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 
 
 function App() {
+  
 
-  const [posts, createPosts] = useState([
-    {
-        id: 1,
-        title: 'Title',
-        user: 'Username',
-        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
-    },
-    {
-        id: 2,
-        title: 'Title',
-        user: 'Username',
-        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
-    },
-    {
-        id: 3,
-        title: 'Title',
-        user: 'Username',
-        body: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex dolores, velit est blanditiis, quo ducimus voluptatum fuga ipsum laboriosam quidem ut magni veritatis, optio neque quas tempora quisquam nihil ab'
+
+  const [posts, createPosts] = useState([])
+
+  useEffect(() => {
+
+    const getPosts = async () => {
+      const postsFromServer = await fetchPosts()
+      createPosts(postsFromServer)
     }
-  ])
 
-  const addPost = (post) => {
+    getPosts()
+  }, [])
 
-    const id = Math.floor(Math.random() * 10000) + 1
+  const fetchPosts = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6')
+    const data = await res.json()
 
-    const newPost = { id, ...post }
-    createPosts([...posts, newPost])
+    return data
   }
 
-  const deletePost = (id) => {
+  const addPost = async (post) => {
+
+
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(post)
+    })
+
+    const data = await res.json()
+
+    createPosts([...posts, data])
+
+  //  const id = Math.floor(Math.random() * 10000) + 1
+
+  //  const newPost = { id, ...post }
+  //  createPosts([...posts, newPost])
+  }
+
+  const deletePost = async (id) => {
+    await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, 
+    {
+      method: 'DELETE',
+    });
+
+
     createPosts(posts.filter((post) => post.id !== id))
   }
 
